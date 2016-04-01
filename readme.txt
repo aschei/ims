@@ -16,8 +16,8 @@ concerns into separate containers and b) takes away the complexity of
 interdependencies and configuration of multiple services that are used
 together to form a solution. It eases orchestration.
 
-3. What docker containers will a part of the solution
------------------------------------------------------
+3. What docker containers will be part of the solution
+------------------------------------------------------
 Two containers, one for the database backend (Mongo-DB), and one for the
 web application.
 
@@ -34,11 +34,9 @@ container can be thrown away without losing important data:
 mkdir /srv/mongodb
 
 This command will create the docker container:
-docker create --name imsdb -p 27017:27017 -v /srv/mongodb/:/data/db/  mongo
+docker create --name imsdb -v /srv/mongodb/:/data/db/  mongo
 
-The name of the container will be imsdb. The port mapping forwards the default
-mongo-db port to the host interface (so one can inspect the database using
-a mongo client on the host machine). Using the -v option, we map docker's
+The name of the container will be imsdb. Using the -v option, we map mongo's
 default data directory (/data/db) to the directory on the host machine.
 
 6. Running Mongo-DB container as a service
@@ -62,10 +60,29 @@ start imsdb
 
 7. Creating a new web app docker image for deployment
 -----------------------------------------------------
-(Taken from https://nodejs.org/en/docs/guides/nodejs-docker-webapp/)
-
+To create a new docker image of the web application on a development machine,
+one can simply issue:
 docker build -t hype/ims .
 
+(The Dockerfile has been created with the help of
+https://nodejs.org/en/docs/guides/nodejs-docker-webapp/)
 
 
+
+8. Run a new web container
+--------------------------
+
+docker create --name ims -e "JWT_SECRET=<secret here>" --link imsdb:db -p 80:3000 hype/ims
+
+* The JWT_SECRET is needed for Jason Web Tokens to work.
+* The link statement connects the mongo db container to an alias "db".
+* The  port mapping maps the http port to port 80 on host machine.
+
+When the container has been successfully created, it can be started using an
+upstart script or manually by issuing:
+docker start ims
+
+
+Now, you should be able to access the system on the hostsystem using
+http://localhost
 
