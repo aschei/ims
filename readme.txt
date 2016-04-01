@@ -1,5 +1,5 @@
-Using MEAN stack on Docker for the Instance Management Server
--------------------------------------------------------------
+Using MEAN stack on Docker for the IMS 
+--------------------------------------
 
 1. What is MEAN stack
 ---------------------
