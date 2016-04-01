@@ -12,7 +12,9 @@ require('./models/User');
 
 require('./config/passport');
 
-mongoose.connect('mongodb://localhost/news')
+var mongohost = process.env.DB_PORT_27017_TCP_ADDR || 'localhost';
+var mongoport = process.env.DB_PORT_27017_TCP_PORT || '27017';
+mongoose.connect('mongodb://' +mongohost+ ':'+mongoport+'/news');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
